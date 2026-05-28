@@ -1,0 +1,19 @@
+name: vit
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - jupyter
+  - numpy
+  - matplotlib
+  - pandas
+  - scikit-learn
+  - seaborn
+  - tqdm
+  - pyyaml
+  - pytorch
+  - torchvision
+  - wandb
+  - hydra-core
+  - timm
