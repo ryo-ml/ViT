@@ -6,7 +6,6 @@ class PositionalEncoding(nn.Module):
     """
     Sinusoidal positional encoding.
     """
-
     def __init__(self, max_len: int, d_model: int) -> None:
         super().__init__()
 
@@ -29,7 +28,6 @@ class PatchEmbedding(nn.Module):
     """
     Patchifies and embeds.
     """
-
     def __init__(self, channels: int, d_model: int, patch_size) -> None:
         super().__init__()
 
@@ -40,5 +38,5 @@ class PatchEmbedding(nn.Module):
         """
         x (B, C, H, W): 2d images
         """
-        # (B, d_model, H/P, H/W) -> (B, d_model, N) -> (B, N, d_model)
+        # (B, C, H, W) -> (B, d_model, H/P, H/W) -> (B, d_model, N) -> (B, N, d_model)
         return self.flatten(self.conv(x)).permute(0, 2, 1)
