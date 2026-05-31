@@ -1,8 +1,11 @@
-# vscode
-.vscode
-
-# python
-__pycache__
-
 # os
 .DS_Store
+
+# vscode
+.vscode/
+
+# python
+__pycache__/
+
+# pytest
+.pytest_cache/
