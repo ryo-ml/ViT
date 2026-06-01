@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from .modules import Block
-from .embeddings import PatchEmbedding, LearnablePositionalEmbedding
+from src.models.modules import Block
+from src.models.embeddings import LearnablePositionalEmbedding, PatchEmbedding
 
 class VisionTransformer(nn.Module):
     def __init__(
