@@ -20,15 +20,17 @@ class VisionTransformer(nn.Module):
 
         height, width = img_size
         num_patches =  (height // patch_size) * (width // patch_size)
+
         self.cls_token = nn.Parameter(
             torch.randn(1, 1, d_model)
         )
+
         self.patch_embed = PatchEmbedding(
             in_channels=in_channels,
             d_model=d_model,
             patch_size=patch_size
         )
-        self.pe = LearnablePositionalEmbedding(
+        self.pos_embed = LearnablePositionalEmbedding(
             num_tokens=num_patches + 1,
             d_model=d_model,
         )
@@ -53,7 +55,7 @@ class VisionTransformer(nn.Module):
         cls_tokens = self.cls_token.expand(B, -1, -1) # (1, 1, d_model) -> (B, 1, d_model)
         x = self.patch_embed(x) # (B, N, d_model)
         x = torch.cat((cls_tokens, x), dim=1) # (B, N + 1, d_model)
-        x = self.emb_dropout(x + self.pe())
+        x = self.emb_dropout(x + self.pos_embed())
 
         for block in self.blocks:
             x = block(x)
