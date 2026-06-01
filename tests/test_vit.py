@@ -2,7 +2,7 @@ import torch
 
 from src.models.vision_transformer import VisionTransformer
 
-def test_vit():
+def test_vit() -> None:
     model = VisionTransformer(
         img_size=(224, 224),
         patch_size=16,
