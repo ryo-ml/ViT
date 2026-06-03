@@ -48,7 +48,7 @@ class VisionTransformer(nn.Module):
 
     def forward(self, x: torch.Tensor):
         """
-        x (B, C, H, W): 2d images
+        x (B, C, H, W): pre-processed 2d images
         """
         B, _, _, _ = x.size()
 
