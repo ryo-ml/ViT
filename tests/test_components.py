@@ -1,5 +1,4 @@
 import hydra
-from omegaconf import DictConfig
 import torch
 
 from src.models.builder import build_model
