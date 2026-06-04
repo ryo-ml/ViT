@@ -1,0 +1,17 @@
+model:
+  _target_: src.models.vision_transformer.VisionTransformer
+  img_size: [224, 224]
+  patch_size: 16
+  in_channels: 3
+  d_model: 768
+  dropout: 0.1
+  num_layers: 12
+  num_heads: 12
+  qkv_bias: true
+
+optimizer:
+  _target_: torch.optim.AdamW
+  lr: 1e-4
+
+loss:
+  _target_: torch.nn.CrossEntropyLoss
