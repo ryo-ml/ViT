@@ -7,7 +7,7 @@ from src.models.embeddings import LearnablePositionalEmbedding, PatchEmbedding
 class VisionTransformer(nn.Module):
     def __init__(
         self,
-        img_size: tuple,
+        img_size: list,
         patch_size: int,
         in_channels: int,
         d_model: int,
