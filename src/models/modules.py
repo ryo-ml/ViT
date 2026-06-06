@@ -45,7 +45,7 @@ class Attention(nn.Module):
 
 class Block(nn.Module):
     """
-    transformer encoder
+    transformer encoder block
     """
     def __init__(
         self,
@@ -65,6 +65,27 @@ class Block(nn.Module):
         )
 
         self.proj_norm = nn.LayerNorm(d_model)
+        self.mlp = MLP(d_model, dropout)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        x (B, N, D): patch embeddings
+        """
+        # self-attention
+        x = x + self.attn(self.attn_norm(x))
+
+        # mlp
+        x = x + self.mlp(self.proj_norm(x))
+        return x
+
+class MLP(nn.Module):
+    def __init__(
+        self,
+        d_model: int,
+        dropout: float,
+    ) -> None:
+        super().__init__()
+
         self.proj1 = nn.Linear(d_model, 4 * d_model)
         self.gelu = nn.GELU()
         self.proj_dropout1 = nn.Dropout(dropout)
@@ -72,11 +93,6 @@ class Block(nn.Module):
         self.proj_dropout2 = nn.Dropout(dropout)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        x (B, N, D): patch embeddings
-        """
-        x = x + self.attn(self.attn_norm(x))
-        x_mlp = self.proj_dropout1(self.gelu(self.proj1(self.proj_norm(x))))
-        x_mlp = self.proj_dropout2(self.proj2(x_mlp))
-        x = x + x_mlp
+        x = self.proj_dropout1(self.gelu(self.proj1(x)))
+        x = self.proj_dropout2(self.proj2(x))
         return x
