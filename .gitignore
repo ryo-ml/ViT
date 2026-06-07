@@ -10,6 +10,9 @@ __pycache__/
 # pytest
 .pytest_cache/
 
+# hydra
+outputs/
+
 # local
 configs/local
 
