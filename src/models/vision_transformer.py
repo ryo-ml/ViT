@@ -15,6 +15,7 @@ class VisionTransformer(nn.Module):
         num_layers: int,
         num_heads: int,
         qkv_bias: bool,
+        num_classes: int,
     ):
         super().__init__()
 
@@ -25,6 +26,7 @@ class VisionTransformer(nn.Module):
             torch.randn(1, 1, d_model)
         )
 
+        # patch embeddings
         self.patch_embed = PatchEmbedding(
             in_channels=in_channels,
             d_model=d_model,
@@ -36,6 +38,7 @@ class VisionTransformer(nn.Module):
         )
         self.emb_dropout = nn.Dropout(dropout)
 
+        # transformer encoder
         self.blocks = nn.ModuleList([
             Block(
                 num_heads=num_heads,
@@ -46,17 +49,42 @@ class VisionTransformer(nn.Module):
             for _ in range(num_layers)
         ])
 
-    def forward(self, x: torch.Tensor):
+        # mlp head
+        self.cls_norm = nn.LayerNorm(d_model)
+        self.mlp_head = MLPHead(d_model, num_classes)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         x (B, C, H, W): pre-processed 2d images
         """
         B, _, _, _ = x.size()
 
+        # patch embeddings
         cls_tokens = self.cls_token.expand(B, -1, -1) # (1, 1, d_model) -> (B, 1, d_model)
         x = self.patch_embed(x) # (B, N, d_model)
         x = torch.cat((cls_tokens, x), dim=1) # (B, N + 1, d_model)
         x = self.emb_dropout(x + self.pos_embed())
 
+        # transformer encoder
         for block in self.blocks:
             x = block(x)
+
+        # mlp head
+        cls_tokens = x[:, 0, :]
+        x = self.mlp_head(self.cls_norm(cls_tokens))
         return x
+
+class MLPHead(nn.Module):
+    def __init__(
+        self,
+        d_model: int,
+        num_classes: int,
+    ) -> None:
+        super().__init__()
+
+        self.head1 = nn.Linear(d_model, d_model)
+        self.tanh = nn.Tanh()
+        self.head2 = nn.Linear(d_model, num_classes)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.head2(self.tanh(self.head1(x)))
