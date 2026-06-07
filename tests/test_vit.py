@@ -12,10 +12,11 @@ def test_vit() -> None:
         num_layers=12,
         num_heads=8,
         qkv_bias=True,
+        num_classes=100,
     )
 
     x = torch.randn(2, 3, 224, 224)
     y = model(x)
 
-    # num_tokens = num_patches + cls_token = 196 + 1 = 197
-    assert y.size() == (2, 197, 768)
+    # y: (B, num_classes)
+    assert y.size() == (2, 100)
