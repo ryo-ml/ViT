@@ -11,6 +11,7 @@ class MetricsLogger:
         self,
         output_dir: Path,
         use_wandb: bool,
+        project: str | None = None,
     ) -> None:
         output_dir.mkdir(parents=True, exist_ok=True)
         self.output_path = output_dir / 'metrics.csv'
@@ -25,7 +26,7 @@ class MetricsLogger:
         if use_wandb:
             load_dotenv(BASE_DIR / '.env')
             wandb.login(os.environ['WANDB_API_KEY'])
-            self.run = wandb.init()
+            self.run = wandb.init(project=project)
 
     def _write_csv(self, step: int, metrics: dict) -> None:
         row = {'step': step, **metrics}
