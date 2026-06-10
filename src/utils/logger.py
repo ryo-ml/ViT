@@ -12,4 +12,5 @@ def get_logger(name: str = __name__) -> logging.Logger:
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(formatter)
         logger.addHandler(handler)
+        logger.propagate = False
     return logger
